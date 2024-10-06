@@ -13,14 +13,15 @@ def format_y(y):
             y = [obj[:minlength] for obj in y]
     return y
 
-def plot_figures(output_path, desc, y, xlabel, ylabel, x=None, yerr = None, legend=None, legendloc=None, legendncol=None, title=None, xlim=None, ylim=None, show_plot=False, gen_pkl=True, save_pdf=False, plt_only=False):
+def plot_figures(output_path, desc, y, xlabel, ylabel, x=None, yerr = None, legend=None, legendloc='best', legendncol=1, title=None, xlim=None, ylim=None, use_tex=False, show_grid=True, show_plot=False, gen_pkl=True, save_pdf=False, plt_only=False):
 
     if not plt_only:
         rcParams.update({'font.size': 20})
-        plt.ioff()
+        # plt.ioff()
         plt.rc('axes', prop_cycle=cycler('color',['black', 'red', 'blue', 'black', 'red', 'blue', 'black','red', 'blue', 'black', 'red', 'blue', 'black']) + cycler('marker', ['*', '+', 'x', 'o', '<', '>', 'v', '^', ',', "_", '.', '|', 'X']) + cycler('linestyle', ['-', '--', '-.', ':', '-', '--', '-.',':', '-', '--', '-.',':','-']))
-        # this ensures that type-3 fonts are not used when generating figures
-        plt.rc('text', usetex=True)
+        if use_tex:
+            # this ensures that type-3 fonts are not used when generating figures
+            plt.rc('text', usetex=True)
         plt.rc('font', family='serif')
         markersize=11
         linewidth=3
@@ -33,6 +34,9 @@ def plot_figures(output_path, desc, y, xlabel, ylabel, x=None, yerr = None, lege
         # linestyles = ['-', '--', '-.', ':', '-', '--', '-.']  # http://matplotlib.org/api/lines_api.html
         # fig = plt.figure(1, figsize=(11.25,7.5))  # width, height
         fig = plt.figure(1, figsize=(7.5,7.5))  # width, height
+
+    if plt_only:
+        plt.ioff()
 
     y = format_y(y)
     y = np.array(y)
@@ -86,7 +90,8 @@ def plot_figures(output_path, desc, y, xlabel, ylabel, x=None, yerr = None, lege
         plt.xlim(xlim)
     if ylim is not None:
         plt.ylim(ylim)
-    plt.grid(True, which='both')
+    if show_grid:
+        plt.grid(True, which='both')
 
     os.makedirs(output_path, exist_ok=True)
     if not plt_only:
